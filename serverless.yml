@@ -19,6 +19,7 @@ provider:
   #Available through process.env
   environment:
     tableName: notes
+    stripeSecretKey: ${env:STRIPE_SECRET_KEY}
 
   #Defines IAM permission policy for Lambda function
   #(able to access DynamoDB)
@@ -83,5 +84,14 @@ functions:
       - http:
           path: notes/{id}
           method: delete
+          cors: true
+          authorizer: aws_iam
+        
+  billing:
+    handler: billing.main
+    events:
+      - http:
+          path: billing
+          method: post
           cors: true
           authorizer: aws_iam
