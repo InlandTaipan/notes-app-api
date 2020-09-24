@@ -1,5 +1,5 @@
 # NOTE: update this with your service name
-service: notes-app-api
+service: notes-app-2-api
 
 # Create an optimized package for our functions 
 package:
@@ -10,15 +10,21 @@ plugins:
   - serverless-offline
   - serverless-dotenv-plugin # Load .env as environment variables
 
+custom:
+  #Stage based on command argument; else default to provider
+  stage: ${opt:stage, self:provider.stage}
+  #Set the tablename here to use for local testing
+  tableName: ${self:custom.stage}-notes
+
 provider:
   name: aws
   runtime: nodejs12.x
-  stage: prod
+  stage: dev
   region: us-east-2
 
   #Available through process.env
   environment:
-    tableName: notes
+    tableName: ${self:custom.tableName}
     stripeSecretKey: ${env:STRIPE_SECRET_KEY}
 
   #Defines IAM permission policy for Lambda function
@@ -34,7 +40,8 @@ provider:
         - dynamodb:PutItem
         - dynamodb:UpdateItem
         - dynamodb:DeleteItem
-      Resource: "arn:aws:dynamodb:us-east-2:*:*"
+      Resource: 
+        - "Fn::GetAtt": [NotesTable, Arn]
 
 #Defines HTTP API endpoint that calls the main function in create.js
 #path: url path is /notes
@@ -100,3 +107,10 @@ functions:
 resources:
   #API Gateway Errors
   - ${file(resources/api-gateway-errors.yml)}
+  #DynamoDB
+  - ${file(resources/dynamodb-table.yml)}
+  #S3
+  - ${file(resources/s3-bucket.yml)}
+  #Cognito
+  - ${file(resources/cognito-user-pool.yml)}
+  - ${file(resources/cognito-identity-pool.yml)}
