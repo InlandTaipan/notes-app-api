@@ -3,7 +3,7 @@ import { debug } from "console";
 import util from "util";
 
 //Log AWS SDK calls
-AWS.config.logger = { log: debug};
+AWS.config.logger = { log: debugg};
 
 let logs;
 let timeoutTimer;
@@ -12,7 +12,7 @@ export function init(event, context) {
     logs = [];
 
     //Log API event
-    debug("API event", {
+    debugg("API event", {
         body: event.body,
         pathParameters: event.pathParameters,
         queryStringParameters: event.queryStringParameters
@@ -34,7 +34,7 @@ export function flush(e) {
     console.error(e);
 }
 
-export default function debug() { 
+export default function debugg() { 
     logs.push( { date: new Date(), string: util.format.apply(null, arguments), });
     }
      
