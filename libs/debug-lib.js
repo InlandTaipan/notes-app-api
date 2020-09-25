@@ -34,9 +34,7 @@ export function flush(e) {
     console.error(e);
 }
 
-export default function debug() {
-    logs.push({
-        date: new Date(),
-        string: util.format.apply(null, arguments),
-    });
-}
+export default function debug() { 
+    logs.push( { date: new Date(), string: util.format.apply(null, arguments), });
+    }
+     
